@@ -145,14 +145,6 @@ public class BrickBreakerGame extends JPanel implements ActionListener
 		// Set the background color to black
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, getWidth(), getHeight());
-		
-		if (gamePaused)
-		{
-			// Display a message when the game is paused
-			g.setColor(Color.RED);
-			g.setFont(new Font("Arial", Font.BOLD, 20));
-			g.drawString("Game Paused. Press Esc to Resume.", 100, 200);
-		}
 
         // Draw the bricks
         for (int i = 0; i < brickRowCount; i++)
@@ -187,6 +179,14 @@ public class BrickBreakerGame extends JPanel implements ActionListener
             g.drawString("Game Over! Your Score:"+score, 100, 200);
             g.drawString("Press any key to continue.", 100, 300);
         }
+		// Game Pause Message
+		if (gamePaused)
+		{
+			// Display a message when the game is paused
+			g.setColor(Color.RED);
+			g.setFont(new Font("Arial", Font.BOLD, 20));
+			g.drawString("Game Paused. Press Esc to Resume.", 100, 200);
+		}
     }
 
     // Method to reset the game
@@ -228,15 +228,25 @@ public class BrickBreakerGame extends JPanel implements ActionListener
         {
             public void keyPressed(KeyEvent e)
             {
-				if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
+				// Pause Game
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) // Check if user entered 'Esc'
 				{
-					game.gamePaused = !game.gamePaused; // Toggle the game pause
+					if (game.gameOver)
+					{
+						game.resetGame(); // Reset the game even when "Esc" is pressed after a game over
+					}
+					else{
+						// Toggle the game pause if Game is not Over
+						game.gamePaused = !game.gamePaused;
+					}
 					game.repaint(); // Repaint to show/hide the message
 				}
 				if (game.gamePaused)
 				{
 					return; // Don't process other keys when the game is paused
 				}
+				
+				// Game Over and Reset
                 if (game.gameOver)
                 {
                     if (resetRequested)
@@ -252,11 +262,13 @@ public class BrickBreakerGame extends JPanel implements ActionListener
                 {
                     resetRequested = false; // Reset the reset request flag if the game is not over
                 }
-
+				
+				// Moving the paddle to Left
                 if (e.getKeyCode() == KeyEvent.VK_LEFT && game.paddleX > 0)
                 {
                     game.paddleX -= 40;
                 }
+				// Moving the paddle to Left
                 if (e.getKeyCode() == KeyEvent.VK_RIGHT && game.paddleX < maxwidth - 100)
                 {
                     game.paddleX += 40;
