@@ -11,14 +11,15 @@ public class BrickBreakerGame extends JPanel implements ActionListener
     private int ballSpeedX, ballSpeedY; // Ball's speed
     private int paddleX; // Paddle's position
     private int score;
-    private int brickRowCount = 1;
-    private int brickColumnCount = 2;
+    private int brickRowCount = 5;
+    private int brickColumnCount = 27;
     private int brickWidth;
     private int brickHeight;
     private int[][] bricks;
     private boolean gameOver; // Flag to indicate the game is over
     private static int maxwidth;
     private static boolean resetRequested; // Flag to indicate a reset is requested
+	private boolean gamePaused;
 
     public BrickBreakerGame()
     {
@@ -31,6 +32,7 @@ public class BrickBreakerGame extends JPanel implements ActionListener
         score = 0;
         gameOver = false;
         resetRequested = false;
+		gamePaused = false;
 
         // Initialize bricks
         brickWidth = 50;
@@ -51,6 +53,10 @@ public class BrickBreakerGame extends JPanel implements ActionListener
 
     public void actionPerformed(ActionEvent e)
     {
+		if (gamePaused)
+		{
+			return; // Don't update if the game is paused
+		}
         if (gameOver && resetRequested)
         {
             // Reset the game when a reset is requested
@@ -139,6 +145,14 @@ public class BrickBreakerGame extends JPanel implements ActionListener
 		// Set the background color to black
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, getWidth(), getHeight());
+		
+		if (gamePaused)
+		{
+			// Display a message when the game is paused
+			g.setColor(Color.RED);
+			g.setFont(new Font("Arial", Font.BOLD, 20));
+			g.drawString("Game Paused. Press Esc to Resume.", 100, 200);
+		}
 
         // Draw the bricks
         for (int i = 0; i < brickRowCount; i++)
@@ -214,6 +228,15 @@ public class BrickBreakerGame extends JPanel implements ActionListener
         {
             public void keyPressed(KeyEvent e)
             {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
+				{
+					game.gamePaused = !game.gamePaused; // Toggle the game pause
+					game.repaint(); // Repaint to show/hide the message
+				}
+				if (game.gamePaused)
+				{
+					return; // Don't process other keys when the game is paused
+				}
                 if (game.gameOver)
                 {
                     if (resetRequested)
