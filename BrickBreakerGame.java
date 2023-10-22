@@ -90,7 +90,7 @@ public class BrickBreakerGame extends JPanel implements ActionListener
         }
 
         // Ball-paddle collision
-        if (ballY + 20 >= 500 && ballX + 20 >= paddleX && ballX <= paddleX + 60)
+        if (ballY + 20 == 500 && ballX + 20 >= paddleX && ballX <= paddleX + 60)
         {
             ballSpeedY = -ballSpeedY;
         }
