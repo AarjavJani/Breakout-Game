@@ -214,69 +214,102 @@ public class BrickBreakerGame extends JPanel implements ActionListener
 
     public static void main(String[] args)
     {
-        JFrame frame = new JFrame("Brick Breaker Game");
-        BrickBreakerGame game = new BrickBreakerGame();
-        frame.add(game);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximize the frame
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-
-        maxwidth = frame.getWidth();
-
-        // Listen for keyboard input to move the paddle and request reset
-        frame.addKeyListener(new KeyAdapter()
+        try
         {
-            public void keyPressed(KeyEvent e)
+            JFrame frame = new JFrame("Brick Breaker Game");
+            BrickBreakerGame game = new BrickBreakerGame();
+            frame.add(game);
+            frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // Maximize the frame
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setVisible(true);
+
+            maxwidth = frame.getWidth();
+
+            // Listen for keyboard input to move the paddle and request reset
+            frame.addKeyListener(new KeyAdapter()
             {
-				// Pause Game
-				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) // Check if user entered 'Esc'
-				{
-					if (game.gameOver)
-					{
-						game.resetGame(); // Reset the game even when "Esc" is pressed after a game over
-					}
-					else{
-						// Toggle the game pause if Game is not Over
-						game.gamePaused = !game.gamePaused;
-					}
-					game.repaint(); // Repaint to show/hide the message
-				}
-				if (game.gamePaused)
-				{
-					return; // Don't process other keys when the game is paused
-				}
-				
-				// Game Over and Reset
-                if (game.gameOver)
+                public void keyPressed(KeyEvent e)
                 {
-                    if (resetRequested)
+		    		// Pause Game
+		    		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) // Check if user entered 'Esc'
+		    		{
+		    			if (game.gameOver)
+		    			{
+		    				game.resetGame(); // Reset the game even when "Esc" is pressed after a game over
+		    			}
+		    			else{
+		    				// Toggle the game pause if Game is not Over
+		    				game.gamePaused = !game.gamePaused;
+		    			}
+		    			game.repaint(); // Repaint to show/hide the message
+		    		}
+		    		if (game.gamePaused)
+		    		{
+		    			return; // Don't process other keys when the game is paused
+		    		}
+    
+		    		// Game Over and Reset
+                    if (game.gameOver)
                     {
-                        game.resetGame(); // Reset the game when any key is pressed after a game over
+                        if (resetRequested)
+                        {
+                            game.resetGame(); // Reset the game when any key is pressed after a game over
+                        }
+                        else
+                        {
+                            resetRequested = true; // Set the reset request flag
+                        }
                     }
                     else
                     {
-                        resetRequested = true; // Set the reset request flag
+                        resetRequested = false; // Reset the reset request flag if the game is not over
+                    }
+    
+		    		// Moving the paddle to Left
+                    if (e.getKeyCode() == KeyEvent.VK_LEFT && game.paddleX > 0)
+                    {
+                        game.paddleX -= 40;
+                    }
+		    		// Moving the paddle to Left
+                    if (e.getKeyCode() == KeyEvent.VK_RIGHT && game.paddleX < maxwidth - 100)
+                    {
+                        game.paddleX += 40;
                     }
                 }
-                else
-                {
-                    resetRequested = false; // Reset the reset request flag if the game is not over
-                }
-				
-				// Moving the paddle to Left
-                if (e.getKeyCode() == KeyEvent.VK_LEFT && game.paddleX > 0)
-                {
-                    game.paddleX -= 40;
-                }
-				// Moving the paddle to Left
-                if (e.getKeyCode() == KeyEvent.VK_RIGHT && game.paddleX < maxwidth - 100)
-                {
-                    game.paddleX += 40;
-                }
-            }
-        });
+            });
 
-        frame.setFocusable(true);
-        frame.setFocusTraversalKeysEnabled(false);
+            frame.setFocusable(true);
+            frame.setFocusTraversalKeysEnabled(false);
+        }
+        catch (ArrayIndexOutOfBoundsException e)
+        {
+            // Occurs if nested-loops in arrays have some mistake like OOB
+            System.out.print("Error: Array index out of bounds.");
+            e.printStackTrace();
+        }
+        catch (NullPointerException e)
+        {
+            // Occurs if all objects are not properly initialized before using them
+            System.out.print("Error: Object not properly initialized.");
+            e.printStackTrace();
+        }
+        catch (IllegalArgumentException e)
+        {
+            // Occurs if an illegal or inappropriate arguments are passed to a method
+            System.out.print("Error: Illegal argument passed to method.");
+            e.printStackTrace();
+        }
+        catch (IllegalStateException e)
+        {
+            // Occurs if an operation is performed at an illegal or inappropriate time
+            System.out.print("Error: Operation performed at illegal time.");
+            e.printStackTrace();
+        }
+        catch (HeadlessException e)
+        {
+            // Occurs if graphics operations ar eperformed on a system without a GUI or screen
+            System.out.print("Error: System does not have a Screen/GUI.");
+            e.printStackTrace();
+        }
     }
 }
